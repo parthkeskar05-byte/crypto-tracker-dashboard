@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NexusCrypto — Real-Time Analytics & Portfolio Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .glass { background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+    .glow { box-shadow: 0 0 40px -10px rgba(99, 102, 241, 0.2); }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen selection:bg-indigo-500 selection:text-white">
+
+  <!-- Top Navigation -->
+  <nav class="fixed top-0 left-0 right-0 z-50 glass border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center font-bold text-lg shadow-lg shadow-indigo-500/30">N</div>
+        <span class="font-bold tracking-tight text-lg">NexusCrypto</span>
+      </div>
+      <div class="hidden md:flex items-center space-x-8 text-sm font-medium text-slate-300">
+        <a href="#overview" class="hover:text-indigo-400 transition">Overview</a>
+        <a href="#markets" class="hover:text-indigo-400 transition">Markets</a>
+        <a href="#analytics" class="hover:text-indigo-400 transition">Analytics</a>
+        <a href="#portfolio" class="hover:text-indigo-400 transition">Portfolio</a>
+      </div>
+      <div class="flex items-center space-x-3">
+        <span class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-medium">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse mr-2"></span>
+          Live Feed Active
+        </span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="pt-28 pb-16 max-w-7xl mx-auto px-6 space-y-8">
+
+    <!-- Header Section -->
+    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div>
+        <h1 class="text-3xl font-extrabold tracking-tight">Portfolio & Market Analytics</h1>
+        <p class="text-slate-400 text-sm mt-1">Real-time crypto asset tracking, volume analysis, and market performance.</p>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="refreshData()" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-sm transition shadow-lg shadow-indigo-600/20 flex items-center space-x-2">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+          <span>Sync Data</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Stat Tiles (Hero Metrics) -->
+    <div id="overview" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="glass rounded-2xl p-6 glow">
+        <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Total Portfolio Value</div>
+        <div class="text-3xl font-extrabold text-white mb-1">$148,294.50</div>
+        <div class="text-emerald-400 text-xs font-medium flex items-center">
+          <span>▲ +12.4% ($16,340) this month</span>
+        </div>
+      </div>
+      <div class="glass rounded-2xl p-6">
+        <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">24h Trading Volume</div>
+        <div class="text-3xl font-extrabold text-white mb-1">$42,891,200</div>
+        <div class="text-emerald-400 text-xs font-medium flex items-center">
+          <span>▲ +5.2% vs yesterday</span>
+        </div>
+      </div>
+      <div class="glass rounded-2xl p-6">
+        <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Active Assets</div>
+        <div class="text-3xl font-extrabold text-white mb-1">6 Tokens</div>
+        <div class="text-slate-400 text-xs font-medium">BTC, ETH, SOL, AVAX, LINK, DOT</div>
+      </div>
+      <div class="glass rounded-2xl p-6">
+        <div class="text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Market Sentiment</div>
+        <div class="text-3xl font-extrabold text-emerald-400 mb-1">78 / 100</div>
+        <div class="text-emerald-400 text-xs font-medium">Extreme Greed / Bullish</div>
+      </div>
+    </div>
+
+    <!-- Charts Section -->
+    <div id="analytics" class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+      <!-- Portfolio Area Chart -->
+      <div class="glass rounded-3xl p-6 lg:col-span-2 flex flex-col justify-between">
+        <div class="flex items-center justify-between mb-6">
+          <div>
+            <h3 class="text-lg font-bold text-white">Portfolio Performance (7D)</h3>
+            <p class="text-xs text-slate-400">Cumulative asset valuation over time</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <span class="px-3 py-1 rounded-lg bg-indigo-500/10 text-indigo-400 text-xs font-mono font-semibold">Live Feed</span>
+          </div>
+        </div>
+        <div class="h-64 relative flex items-end justify-between px-2 pt-8 pb-2 border-b border-slate-800">
+          <!-- SVG Area Graph -->
+          <svg class="absolute inset-0 w-full h-full overflow-visible" preserveAspectRatio="none" viewBox="0 0 600 200">
+            <defs>
+              <linearGradient id="area-grad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#6366f1" stop-opacity="0.4"/>
+                <stop offset="100%" stop-color="#6366f1" stop-opacity="0.0"/>
+              </linearGradient>
+            </defs>
+            <path d="M 0,160 Q 100,120 200,90 T 400,60 T 600,30 L 600,200 L 0,200 Z" fill="url(#area-grad)"/>
+            <path d="M 0,160 Q 100,120 200,90 T 400,60 T 600,30" fill="none" stroke="#6366f1" stroke-width="3"/>
+          </svg>
+          <div class="z-10 text-xs text-slate-400">Mon</div>
+          <div class="z-10 text-xs text-slate-400">Tue</div>
+          <div class="z-10 text-xs text-slate-400">Wed</div>
+          <div class="z-10 text-xs text-slate-400">Thu</div>
+          <div class="z-10 text-xs text-slate-400">Fri</div>
+          <div class="z-10 text-xs text-slate-400">Sat</div>
+          <div class="z-10 text-xs text-slate-400">Sun</div>
+        </div>
+        <div class="flex items-center justify-between mt-4 text-xs text-slate-400">
+          <span>Low: $131,200</span>
+          <span class="text-indigo-400 font-semibold">Current: $148,294.50</span>
+          <span>High: $150,110</span>
+        </div>
+      </div>
+
+      <!-- Volume Bar Chart -->
+      <div class="glass rounded-3xl p-6 flex flex-col justify-between">
+        <div>
+          <h3 class="text-lg font-bold text-white mb-1">Trading Volume</h3>
+          <p class="text-xs text-slate-400 mb-6">Daily transaction volume (USD Millions)</p>
+        </div>
+        <div class="h-56 flex items-end justify-between space-x-3 px-2 border-b border-slate-800 pb-2">
+          <div class="w-full bg-indigo-600/20 hover:bg-indigo-600/40 rounded-t-lg transition relative group" style="height: 45%;"></div>
+          <div class="w-full bg-indigo-600/30 hover:bg-indigo-600/50 rounded-t-lg transition relative group" style="height: 65%;"></div>
+          <div class="w-full bg-indigo-600/50 hover:bg-indigo-600/70 rounded-t-lg transition relative group" style="height: 80%;"></div>
+          <div class="w-full bg-indigo-600/40 hover:bg-indigo-600/60 rounded-t-lg transition relative group" style="height: 60%;"></div>
+          <div class="w-full bg-indigo-600/80 hover:bg-indigo-600 rounded-t-lg transition relative group" style="height: 95%;"></div>
+          <div class="w-full bg-indigo-600/60 hover:bg-indigo-600/80 rounded-t-lg transition relative group" style="height: 75%;"></div>
+          <div class="w-full bg-indigo-500 rounded-t-lg transition relative group" style="height: 90%;"></div>
+        </div>
+        <div class="flex items-center justify-between mt-4 text-xs text-slate-400">
+          <span>Mon</span>
+          <span>Wed</span>
+          <span>Fri</span>
+          <span>Sun</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Markets Table -->
+    <div id="markets" class="glass rounded-3xl p-6">
+      <div class="flex items-center justify-between mb-6">
+        <div>
+          <h3 class="text-lg font-bold text-white">Market Assets</h3>
+          <p class="text-xs text-slate-400">Live prices and 24h market performance</p>
+        </div>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="w-full text-left text-sm">
+          <thead class="text-xs uppercase tracking-wider text-slate-400 border-b border-slate-800">
+            <tr>
+              <th class="pb-3 font-semibold">Asset</th>
+              <th class="pb-3 font-semibold">Price</th>
+              <th class="pb-3 font-semibold">24h Change</th>
+              <th class="pb-3 font-semibold">Market Cap</th>
+              <th class="pb-3 font-semibold text-right">Action</th>
+            </tr>
+          </thead>
+          <tbody class="divide-y divide-slate-800/60 text-slate-300">
+            <tr class="hover:bg-slate-900/40 transition">
+              <td class="py-4 flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full bg-orange-500/10 text-orange-400 flex items-center justify-center font-bold">₿</div>
+                <div>
+                  <div class="font-bold text-white">Bitcoin</div>
+                  <div class="text-xs text-slate-400">BTC</div>
+                </div>
+              </td>
+              <td class="py-4 font-mono font-semibold text-white">$68,420.00</td>
+              <td class="py-4 text-emerald-400 font-medium">+4.82%</td>
+              <td class="py-4 font-mono">$1.34T</td>
+              <td class="py-4 text-right">
+                <button class="px-3 py-1.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white text-xs font-semibold transition">Trade</button>
+              </td>
+            </tr>
+            <tr class="hover:bg-slate-900/40 transition">
+              <td class="py-4 flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full bg-indigo-500/10 text-indigo-400 flex items-center justify-center font-bold">Ξ</div>
+                <div>
+                  <div class="font-bold text-white">Ethereum</div>
+                  <div class="text-xs text-slate-400">ETH</div>
+                </div>
+              </td>
+              <td class="py-4 font-mono font-semibold text-white">$3,540.20</td>
+              <td class="py-4 text-emerald-400 font-medium">+3.15%</td>
+              <td class="py-4 font-mono">$425.6B</td>
+              <td class="py-4 text-right">
+                <button class="px-3 py-1.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white text-xs font-semibold transition">Trade</button>
+              </td>
+            </tr>
+            <tr class="hover:bg-slate-900/40 transition">
+              <td class="py-4 flex items-center space-x-3">
+                <div class="w-8 h-8 rounded-full bg-violet-500/10 text-violet-400 flex items-center justify-center font-bold">S</div>
+                <div>
+                  <div class="font-bold text-white">Solana</div>
+                  <div class="text-xs text-slate-400">SOL</div>
+                </div>
+              </td>
+              <td class="py-4 font-mono font-semibold text-white">$184.50</td>
+              <td class="py-4 text-emerald-400 font-medium">+7.94%</td>
+              <td class="py-4 font-mono">$86.2B</td>
+              <td class="py-4 text-right">
+                <button class="px-3 py-1.5 rounded-xl bg-indigo-600/20 hover:bg-indigo-600 text-indigo-300 hover:text-white text-xs font-semibold transition">Trade</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="border-t border-slate-900 py-12 text-center text-xs text-slate-500">
+    © 2026 NexusCrypto Dashboard. Built with high-performance visualization standards.
+  </footer>
+
+  <script>
+    function refreshData() {
+      alert("✨ Market data synchronized successfully! All real-time feeds updated.");
+    }
+  </script>
+</body>
+</html>
